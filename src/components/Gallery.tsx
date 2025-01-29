@@ -17,7 +17,7 @@ export default function Gallery({
 }: GalleryProps) {
   const [images, setImages] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [showThumbnails, setShowThumbnails] = useState(false);
+  const [showThumbnails, setShowThumbnails] = useState(true);
   const [direction, setDirection] = useState(0);
 
   useEffect(() => {
