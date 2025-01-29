@@ -38,32 +38,28 @@ export default function ImageViewer({
 
   const handlePrevious = (e: React.MouseEvent) => {
     e.stopPropagation();
-    //setDirection(-1)
     onPrevious();
   };
 
   const handleNext = (e: React.MouseEvent) => {
     e.stopPropagation();
-    //setDirection(1)
     onNext();
   };
 
   const variants = {
     enter: (direction: number) => {
       return {
-        x: direction > 0 ? 1000 : -1000,
+        x: direction > 0 ? "100%" : "-100%",
         opacity: 0,
       };
     },
     center: {
-      zIndex: 1,
       x: 0,
       opacity: 1,
     },
     exit: (direction: number) => {
       return {
-        zIndex: 0,
-        x: direction < 0 ? 1000 : -1000,
+        x: direction < 0 ? "100%" : "-100%",
         opacity: 0,
       };
     },
@@ -79,13 +75,32 @@ export default function ImageViewer({
           initial="enter"
           animate="center"
           exit="exit"
-          className="absolute inset-0 flex items-center justify-center"
-          style={{ scale }}
+          transition={{
+            opacity: { duration: 0.2 },
+            ease: "easeInOut",
+          }}
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.2}
+          onDragEnd={(e, { offset, velocity }) => {
+            const swipe = swipePower(offset.x, velocity.x);
+            if (swipe < -swipeConfidenceThreshold) {
+              onNext();
+            } else if (swipe > swipeConfidenceThreshold) {
+              onPrevious();
+            }
+          }}
+          className="absolute inset-0 w-full h-full flex items-center justify-center"
         >
           <img
             src={image || "/placeholder.svg"}
             alt="Gallery image"
-            className="max-w-full max-h-full object-contain"
+            className="max-w-full max-h-full object-contain select-none"
+            style={{
+              transform: `scale(${scale})`,
+              transition: "transform 0.2s",
+            }}
+            draggable="false"
           />
         </motion.div>
       </AnimatePresence>
@@ -124,3 +139,8 @@ export default function ImageViewer({
     </div>
   );
 }
+
+const swipeConfidenceThreshold = 10000;
+const swipePower = (offset: number, velocity: number) => {
+  return Math.abs(offset) * velocity;
+};
