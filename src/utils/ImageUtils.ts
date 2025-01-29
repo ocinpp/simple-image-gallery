@@ -1,8 +1,10 @@
+import { imageUrls } from "./imageData"
+
 const STORAGE_KEY = "gallery_images"
 
 export function getImages(): string[] {
   const storedImages = localStorage.getItem(STORAGE_KEY)
-  return storedImages ? JSON.parse(storedImages) : []
+  return storedImages ? JSON.parse(storedImages) : imageUrls
 }
 
 export function addImage(imageUrl: string): string[] {

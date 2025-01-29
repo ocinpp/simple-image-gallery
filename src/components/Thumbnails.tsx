@@ -33,14 +33,16 @@ export default function Thumbnails({
   return (
     <div
       ref={thumbnailsRef}
-      className="flex overflow-x-auto space-x-2 mb-4 pb-2"
+      className="flex overflow-x-auto space-x-2 p-2 bg-black bg-opacity-50 h-24"
     >
       {images.map((image, index) => (
         <button
           key={index}
           onClick={() => onThumbnailClick(index)}
-          className={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden ${
-            index === currentIndex ? "ring-2 ring-blue-500" : ""
+          className={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden transition-all duration-200 ${
+            index === currentIndex
+              ? "ring-2 ring-white scale-110"
+              : "opacity-50 hover:opacity-100"
           }`}
         >
           <img
