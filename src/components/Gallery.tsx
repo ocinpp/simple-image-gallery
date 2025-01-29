@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ChevronUp, ChevronDown } from "lucide-react";
 import ImageViewer from "./ImageViewer";
 import Thumbnails from "./Thumbnails";
@@ -17,12 +17,26 @@ export default function Gallery({
 }: GalleryProps) {
   const [images, setImages] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [showThumbnails, setShowThumbnails] = useState(true);
+  const [showThumbnails, setShowThumbnails] = useState(false);
   const [direction, setDirection] = useState(0);
 
   useEffect(() => {
     setImages(getImages());
   }, []);
+
+  const handlePrevious = useCallback(() => {
+    setDirection(-1);
+    setCurrentIndex((prevIndex) =>
+      prevIndex > 0 ? prevIndex - 1 : images.length - 1
+    );
+  }, [images.length]);
+
+  const handleNext = useCallback(() => {
+    setDirection(1);
+    setCurrentIndex((prevIndex) =>
+      prevIndex < images.length - 1 ? prevIndex + 1 : 0
+    );
+  }, [images.length]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -33,27 +47,12 @@ export default function Gallery({
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
-  const handlePrevious = () => {
-    setDirection(-1);
-    setCurrentIndex((prevIndex) =>
-      prevIndex > 0 ? prevIndex - 1 : images.length - 1
-    );
-  };
-
-  const handleNext = () => {
-    setDirection(1);
-    setCurrentIndex((prevIndex) =>
-      prevIndex < images.length - 1 ? prevIndex + 1 : 0
-    );
-  };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [handlePrevious, handleNext]);
 
   const handleThumbnailClick = (index: number) => {
     setCurrentIndex(index);
-    // Removed the line that hides thumbnails
   };
 
   const handleAddImage = (imageUrl: string) => {
