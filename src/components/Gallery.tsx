@@ -17,8 +17,8 @@ export default function Gallery({
 }: GalleryProps) {
   const [images, setImages] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isFlipping, setIsFlipping] = useState(false);
-  const [showThumbnails, setShowThumbnails] = useState(false);
+  const [showThumbnails, setShowThumbnails] = useState(true);
+  const [direction, setDirection] = useState(0);
 
   useEffect(() => {
     setImages(getImages());
@@ -38,23 +38,22 @@ export default function Gallery({
   }, []);
 
   const handlePrevious = () => {
-    setIsFlipping(true);
+    setDirection(-1);
     setCurrentIndex((prevIndex) =>
       prevIndex > 0 ? prevIndex - 1 : images.length - 1
     );
-    setTimeout(() => setIsFlipping(false), 500);
   };
 
   const handleNext = () => {
-    setIsFlipping(true);
+    setDirection(1);
     setCurrentIndex((prevIndex) =>
       prevIndex < images.length - 1 ? prevIndex + 1 : 0
     );
-    setTimeout(() => setIsFlipping(false), 500);
   };
 
   const handleThumbnailClick = (index: number) => {
     setCurrentIndex(index);
+    // Removed the line that hides thumbnails
   };
 
   const handleAddImage = (imageUrl: string) => {
@@ -88,11 +87,12 @@ export default function Gallery({
             image={images[currentIndex]}
             onPrevious={handlePrevious}
             onNext={handleNext}
-            isFlipping={isFlipping}
+            direction={direction}
+            className="z-0"
           />
         )}
       </div>
-      <div className="absolute bottom-0 left-0 right-0">
+      <div className="absolute bottom-0 left-0 right-0 z-10">
         <Button
           variant="outline"
           size="sm"
