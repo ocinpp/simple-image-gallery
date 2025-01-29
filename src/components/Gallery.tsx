@@ -73,7 +73,7 @@ export default function Gallery({
   };
 
   return (
-    <div className="h-screen flex flex-col relative">
+    <div className="h-dvh flex flex-col relative">
       <div className="flex-grow relative">
         {images.length === 0 ? (
           <div className="absolute inset-0 flex items-center justify-center">
